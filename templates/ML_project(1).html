@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+   
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    
+    <style>
+       
+        body {
+            
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;                   
+            height: 100vh;
+            margin: 0;
+        }
+
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.3); 
+            padding: 20px;
+            margin-top: 10vh;
+            opacity: 0.9; 
+        }
+    
+        body {
+            font-family:'Arial, sans-serif';
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        #hel{
+            font-family:'sans-serif'; 
+            color:'red';
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Cardiology Prediction</h1>
+        <h1 id="hel">{{ re }}</h1>
+        <form id="cardiologyForm" action="/submit" method="post">
+            <div class="form-group">
+                <label for="age">Age:</label>
+                <input type="number" name='age' class="form-control" id="age" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="sex">Sex (0 = Female, 1 = Male):</label>
+                <input type="number" name="sex" class="form-control" id="sex" min="0" max="1" required>
+            </div>
+            <div class="form-group">
+                <label for="chestPainType">Chest Pain Type (1 = Typical Angina, 2 = Atypical Angina, 3 = Non-Anginal Pain, 4 = Asymptomatic):</label>
+                <input type="number" name="chestPainType" class="form-control" id="chestPainType" min="0" max="4" required>
+            </div>
+            <div class="form-group">
+                <label for="restingBP">Resting Blood Pressure:</label>
+                <input type="number" name="restingBP" class="form-control" id="restingBP" required>
+            </div>
+            <div class="form-group">
+                <label for="cholesterol">Serum Cholestoral (mg/dl):</label>
+                <input type="number" name="cholesterol" class="form-control" id="cholesterol" required>
+            </div>
+            <div class="form-group">
+                <label for="fastingBloodSugar">Fasting Blood Sugar (>120 mg/dl) (0 = No, 1 = Yes):</label>
+                <input type="number" name="fastingBloodSugar" class="form-control" id="fastingBloodSugar" min="0" max="1" required>
+            </div>
+            <div class="form-group">
+                <label for="restECG">Resting Electrocardiographic Results (0 = Normal, 1 = ST-T Wave Abnormality, 2 = Probable or Definite Left Ventricular Hypertrophy):</label>
+                <input type="number" name="restECG" class="form-control" id="restECG" min="0" max="2" required>
+            </div>
+            <div class="form-group">
+                <label for="maxHeartRate">Maximum Heart Rate Achieved:</label>
+                <input type="number" name="maxHeartRate" class="form-control" id="maxHeartRate" required>
+            </div>
+            <div class="form-group">
+                <label for="exerciseAngina">Exercise Induced Angina (0 = No, 1 = Yes):</label>
+                <input type="number" name="exerciseAngina" class="form-control" id="exerciseAngina" min="0" max="1" required>
+            </div>
+            <div class="form-group">
+                <label for="oldPeak">ST Depression Induced by Exercise (Oldpeak):</label>
+                <input type="number" name="oldPeak" step="0.01" class="form-control" id="oldPeak" required>
+            </div>
+            <div class="form-group">
+                <label for="slope">Slope of Peak Exercise ST Segment (1 = Upsloping, 2 = Flat, 3 = Downsloping):</label>
+                <input type="number" name="slope" class="form-control" id="slope" min="1" max="3" required>
+            </div>
+            <div class="form-group">
+                <label for="numVessels">Number of Major Vessels (0-3) Colored by Flourosopy:</label>
+                <input type="number" name="numVessels" class="form-control" id="numVessels" min="0" max="3" required>
+            </div>
+            <div class="form-group">
+                <label for="thal">Thal (0 = Normal, 1 = Fixed Defect, 2 = Reversible Defect):</label>
+                <input type="number" name="thal" class="form-control" id="thal" min="0" max="3" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        
+        function validateForm() {
+    // Get values from input fields
+    var age = document.getElementById('age').value;
+    var sex = document.getElementById('sex').value;
+    var chestPainType = document.getElementById('chestPainType').value;
+    var restingBP = document.getElementById('restingBp').value;
+    var cholesterol = document.getElementById('cholesterol').value;
+    var fastingBloodSugar = document.getElementById('fastingBloodSugar').value;
+    var restECG = document.getElementById('restECG').value;
+    var maxHeartRate = document.getElementById('maxHeartRate').value;
+    var exerciseAngina = document.getElementById('exerciseAngina').value;
+    var oldPeak = document.getElementById('OldPeak').value;
+    var slope = document.getElementById('slope').value;
+    var numVessels = document.getElementById('numVessels').value;
+    var thal = document.getElementById('thal').value;
+                // Validate age
+                if (age <= 0 || age > 150 || isNaN(age)) {
+                alert("Please enter a valid age.");
+                return false;
+            }
+
+            // Validate sex
+            if (sex !== '0' && sex !== '1') {
+                alert("Please select a valid sex.");
+                return false;
+            }
+
+            // Validate chest pain type
+            if (chestPainType !== '1' && chestPainType !== '2' && chestPainType !== '3' && chestPainType !== '4') {
+                alert("Please select a valid chest pain type.");
+                return false;
+            }
+
+            // Validate resting blood pressure
+            if (restingBP <= 0 || restingBP > 300 || isNaN(restingBP)) {
+                alert("Please enter a valid resting blood pressure.");
+                return false;
+            }
+
+            // Validate serum cholestoral
+            if (cholesterol <= 0 || cholesterol > 1000 || isNaN(cholesterol)) {
+                alert("Please enter a valid serum cholestoral.");
+                return false;
+            }
+
+            // Validate fasting blood sugar
+            if (fastingBloodSugar !== '0' && fastingBloodSugar !== '1') {
+                alert("Please select a valid fasting blood sugar option.");
+                return false;
+            }
+
+            // Validate resting electrocardiographic results
+            if (restECG !== '0' && restECG !== '1' && restECG !== '2') {
+                alert("Please select a valid resting electrocardiographic result.");
+                return false;
+            }
+
+            // Validate maximum heart rate
+            if (maxHeartRate <= 0 || maxHeartRate > 300 || isNaN(maxHeartRate)) {
+                alert("Please enter a valid maximum heart rate.");
+                return false;
+            }
+
+            // Validate exercise induced angina
+            if (exerciseAngina !== '0' && exerciseAngina !== '1') {
+                alert("Please select a valid exercise induced angina option.");
+                return false;
+            }
+
+            // Validate ST depression induced by exercise
+            if (oldPeak <= 0 || oldPeak > 10 || isNaN(oldPeak)) {
+                alert("Please enter a valid ST depression induced by exercise.");
+                return false;
+            }
+
+            // Validate slope of peak exercise ST segment
+            if (slope !== '1' && slope !== '2' && slope !== '3') {
+                alert("Please select a valid slope of peak exercise ST segment.");
+                return false;
+            }
+
+            // Validate number of major vessels
+            if (numVessels < 0 || numVessels > 3 || isNaN(numVessels)) {
+                alert("Please enter a valid number of major vessels.");
+                return false;
+            }
+
+            // Validate thal
+            if (thal !== '0' && thal !== '1' && thal !== '2') {
+                alert("Please select a valid thal option.");
+                return false;
+            }
+
+            // Form is valid, submit the form
+            return true;
+        }
+    </script>
+</body>
+</html>
